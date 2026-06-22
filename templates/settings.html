@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1 class="page-title">Settings</h1>
+        <span class="page-subtitle">Configure Genetic Algorithm parameters</span>
+    </div>
+
+    <div class="settings-grid">
+        <!-- GA Parameters -->
+        <div class="settings-card">
+            <div class="settings-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                <h3>Genetic Algorithm</h3>
+            </div>
+            <form method="POST" action="{{ url_for('settings') }}" class="settings-form">
+                <div class="form-group">
+                    <label for="pop_size">Population Size</label>
+                    <input type="number" id="pop_size" name="pop_size" value="{{ settings.pop_size }}" min="20" max="500">
+                    <span class="form-hint">Number of candidate solutions per generation (20–500)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="generations">Generations</label>
+                    <input type="number" id="generations" name="generations" value="{{ settings.generations }}" min="10" max="2000">
+                    <span class="form-hint">Number of evolution cycles (10–2000)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="mutation_rate">Mutation Rate</label>
+                    <input type="number" id="mutation_rate" name="mutation_rate" value="{{ settings.mutation_rate }}" min="0.01" max="0.5" step="0.01">
+                    <span class="form-hint">Probability of gene swap per individual (0.01–0.5)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="elite_size">Elite Size</label>
+                    <input type="number" id="elite_size" name="elite_size" value="{{ settings.elite_size }}" min="1" max="50">
+                    <span class="form-hint">Top individuals carried over unchanged (1–50)</span>
+                </div>
+
+                <button type="submit" class="btn-save">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save Settings
+                </button>
+            </form>
+        </div>
+
+        <!-- Info Card -->
+        <div class="settings-card info-card">
+            <div class="settings-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <h3>About JASTIPMAXXING</h3>
+            </div>
+            <div class="info-body">
+                <p>A route optimization system using <strong>Genetic Algorithms</strong> to solve the Precedence-Constrained Traveling Salesman Problem (PC-TSP).</p>
+                <div class="info-section">
+                    <h4>How it works</h4>
+                    <ul>
+                        <li><strong>Basecamp</strong> — starting & ending point</li>
+                        <li><strong>Pickup</strong> — shops to collect orders</li>
+                        <li><strong>Delivery</strong> — destinations for each pickup</li>
+                    </ul>
+                    <p>The algorithm ensures every pickup happens <em>before</em> its deliveries, and finds the shortest route visiting all points via real roads (OSRM).</p>
+                </div>
+                <div class="info-section">
+                    <h4>GA Operators</h4>
+                    <ul>
+                        <li><strong>Selection</strong> — top 25% breed next generation</li>
+                        <li><strong>Crossover</strong> — Order Crossover (OX) preserves gene order</li>
+                        <li><strong>Mutation</strong> — swap mutation for diversity</li>
+                        <li><strong>Elitism</strong> — best solutions survive unchanged</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1 class="page-title">Route History</h1>
+        <span class="page-subtitle">{{ routes|length }} route{{ 's' if routes|length != 1 }} optimized</span>
+    </div>
+
+    {% if routes %}
+    <div class="history-grid">
+        {% for r in routes %}
+        <div class="history-card" onclick="viewRoute('{{ r.id }}')">
+            <div class="history-card-header">
+                <span class="history-date">{{ r.date }}</span>
+                <span class="history-badge">{{ "%.1f" | format(r.distance_km) }} km</span>
+            </div>
+            <div class="history-card-body">
+                <div class="history-stat">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>{{ r.stops }} stops</span>
+                </div>
+                <div class="history-stat">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>{{ r.elapsed_s }}s</span>
+                </div>
+                <div class="history-stat">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <span>{{ r.generations }} gen</span>
+                </div>
+            </div>
+            <div class="history-card-footer">
+                <span class="history-basecamp">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                    {{ r.basecamp }}
+                </span>
+                <button class="btn-view" title="View on map">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p>No routes optimized yet.</p>
+        <a href="{{ url_for('index') }}" class="btn-primary-link">Start optimizing</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Store history route data for viewing
+const historyRoutes = {{ routes | tojson }};
+function viewRoute(id) {
+    const r = historyRoutes.find(x => x.id === id);
+    if (!r) return;
+    sessionStorage.setItem('viewRoute', JSON.stringify(r));
+    window.location.href = '/';
+}
+</script>
+{% endblock %}
