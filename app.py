@@ -7,6 +7,7 @@ import csv
 import os
 import time
 import uuid
+import os
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from ga_engine import run_pctsp_ga, repair
@@ -33,6 +34,7 @@ ROUTE_HISTORY = []
 
 POI_DATA = []
 
+
 def load_poi_csv(filepath):
     """Load pinpoint.csv into memory, skipping malformed rows."""
     data = []
@@ -56,6 +58,7 @@ def load_poi_csv(filepath):
                 "lng": lng_f,
             })
     return data
+
 
 # Load on startup
 csv_path = os.path.join(os.path.dirname(__file__), "pinpoint.csv")
@@ -110,7 +113,8 @@ def poi_list():
     if category:
         results = [p for p in results if p["category"] == category]
     if q:
-        results = [p for p in results if q in p["name"].lower() or q in p["tag"].lower()]
+        results = [p for p in results if q in p["name"].lower()
+                   or q in p["tag"].lower()]
 
     # Limit to 50 results for performance
     return jsonify(results[:50])
@@ -200,7 +204,8 @@ def optimize():
     ordered_points = [bc_id] + pickup_ids + list(
         did for dids in delivery_map.values() for did in dids
     )
-    print(f"[OSRM] Computing distance matrix for {len(ordered_points)} points...")
+    print(
+        f"[OSRM] Computing distance matrix for {len(ordered_points)} points...")
     t_osrm = time.time()
     dist_matrix = compute_distance_matrix(ordered_points, points_map)
     print(f"[OSRM] Matrix ready in {time.time() - t_osrm:.2f}s")
@@ -308,4 +313,5 @@ def optimize():
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
